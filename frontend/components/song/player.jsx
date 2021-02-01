@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import YoutubePlayer from 'react-youtube-player';
-const Uploader = require('../../util/uploader');
+//const Uploader = require('../../util/uploader');
 const SongActions = require('../../actions/song_actions');
 
 const Player = React.createClass({
@@ -88,11 +88,13 @@ const Player = React.createClass({
         </div>
       );
     } else {
+      /*
       coverOrPlayer = (
         <div className="player-box">
           <Uploader post={this.postAlbumCover}/>
         </div>
       );
+      */
     }
 
     return (

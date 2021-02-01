@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const root = document.getElementById('content');
-  Modal.setAppElement(document.body); //disable body when modal active
+  //Modal.setAppElement(document.body); //disable body when modal active
   ReactDOM.render(AppRouter, root);
 });
 
