@@ -16,20 +16,6 @@ ActiveRecord::Schema.define(version: 20160707202118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "annotations", force: :cascade do |t|
-    t.integer  "song_id",     null: false
-    t.text     "body",        null: false
-    t.integer  "start_index", null: false
-    t.integer  "end_index",   null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.integer  "author_id"
-  end
-
-  add_index "annotations", ["author_id"], name: "index_annotations_on_author_id", using: :btree
-  add_index "annotations", ["song_id"], name: "index_annotations_on_song_id", using: :btree
-  add_index "annotations", ["start_index", "end_index"], name: "index_annotations_on_start_index_and_end_index", using: :btree
-
   create_table "comments", force: :cascade do |t|
     t.text     "body",             null: false
     t.string   "commentable_type", null: false
@@ -41,6 +27,19 @@ ActiveRecord::Schema.define(version: 20160707202118) do
 
   add_index "comments", ["author_id"], name: "index_comments_on_author_id", using: :btree
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
+
+  create_table "rhymes", force: :cascade do |t|
+    t.integer  "song_id",    null: false
+    t.text     "body",       null: false
+    t.text     "color",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "author_id"
+  end
+
+  add_index "rhymes", ["author_id"], name: "index_rhymes_on_author_id", using: :btree
+  add_index "rhymes", ["song_id", "color"], name: "index_rhymes_on_song_id_and_color", unique: true, using: :btree
+  add_index "rhymes", ["song_id"], name: "index_rhymes_on_song_id", using: :btree
 
   create_table "songs", force: :cascade do |t|
     t.string   "artist",         null: false
@@ -60,6 +59,20 @@ ActiveRecord::Schema.define(version: 20160707202118) do
   end
 
   add_index "songs", ["artist", "title"], name: "index_songs_on_artist_and_title", using: :btree
+
+  create_table "syllables", force: :cascade do |t|
+    t.integer  "rhyme_id",    null: false
+    t.text     "body",        null: false
+    t.integer  "start_index", null: false
+    t.integer  "end_index",   null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "author_id"
+  end
+
+  add_index "syllables", ["author_id"], name: "index_syllables_on_author_id", using: :btree
+  add_index "syllables", ["rhyme_id"], name: "index_syllables_on_rhyme_id", using: :btree
+  add_index "syllables", ["start_index", "end_index"], name: "index_syllables_on_start_index_and_end_index", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -93,7 +106,9 @@ ActiveRecord::Schema.define(version: 20160707202118) do
   add_index "votes", ["upvotable_id", "upvotable_type"], name: "index_votes_on_upvotable_id_and_upvotable_type", using: :btree
   add_index "votes", ["user_id", "upvotable_id", "upvotable_type"], name: "index_votes_on_user_id_and_upvotable_id_and_upvotable_type", unique: true, using: :btree
 
-  add_foreign_key "annotations", "songs"
-  add_foreign_key "annotations", "users", column: "author_id"
+  add_foreign_key "rhymes", "songs"
+  add_foreign_key "rhymes", "users", column: "author_id"
+  add_foreign_key "syllables", "rhymes"
+  add_foreign_key "syllables", "users", column: "author_id"
   add_foreign_key "votes", "users"
 end
