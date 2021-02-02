@@ -1,44 +1,40 @@
-class Api::AnnotationsController < ApplicationController
+class Api::SyllablesController < ApplicationController
   before_action :must_be_author, except: [:index, :show, :create]
 
   def index
-    @annotations = Annotation
-      .where(song_id: params[:song_id])
-      .includes(:author)
-      .order(:start_index)
+    @syllables = Syllable
+                .where(rhyme_id: params[:rhyme_id])
+                .includes(:author)
+                .order(:start_index)
   end
 
   def show
-    @annotation = Annotation
-        .includes(
-          :author,
-          :comments,
-          :votes,
-          comments: [:author]
-        ).find(params[:id])
+    @syllable = Syllable.includes(:author)
+                        .find(params[:id])
   end
 
   def create
-    @annotation = current_api_user.annotations.create!(annotation_params)
+    @rhyme = Rhyme.find(params[:rhyme_id])
+    @syllable = @rhyme.create!(syllable_params)
     render :show
   end
 
   def update
-    @annotation = Annotation.find(params[:id])
-    @annotation.update!(annotation_params)
+    @syllable = Syllable.find(params[:_id])
+    @syllable.update!(syllable_params)
     render :show
   end
 
   def destroy
-    @annotation = Annotation.find(params[:id])
-    @annotation.destroy!
+    @syllable = Syllable.find(params[:id])
+    @syllable.destroy!
     render :show
   end
 
   private
-  def annotation_params
-    params.require(:annotation).permit(
-      :song_id,
+  def syllable_params
+    params.require(:syllable).permit(
+      :rhyme_id,
       :body,
       :start_index,
       :end_index
@@ -46,7 +42,7 @@ class Api::AnnotationsController < ApplicationController
   end
 
   def must_be_author
-    @annotation = Annotation.find(params[:id])
-    current_api_user.id == @annotation.author_id
+    @syllable = Syllable.find(params[:id])
+    current_api_user.id == @syllable.author_id
   end
 end
