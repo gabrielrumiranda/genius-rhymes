@@ -1,0 +1,1 @@
+json.partial! "api/syllables/syllables", collection: @syllables, as: :syllalbe
